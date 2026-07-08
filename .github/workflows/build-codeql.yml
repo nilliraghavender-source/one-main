@@ -56,3 +56,17 @@ jobs:
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/html-app:${{ github.sha }}
           docker push ${{ secrets.DOCKER_USERNAME }}/html-app:latest
+      
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to Azure Container Apps
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          containerAppName: ${{ secrets.AZURE_CONTAINERAPP_NAME }}
+          resourceGroup: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          imageToDeploy: ${{ secrets.DOCKER_USERNAME }}/employee-management-system:latest
+
+
